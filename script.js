@@ -1,3 +1,4 @@
+// Player data
 const players = [
   { "nickname": "Annatar_BR", "category": "GM", "ranking": 1 },
   { "nickname": "Viapiana_BR", "category": "GM", "ranking": 2 },
@@ -18,21 +19,34 @@ const players = [
   { "nickname": "Witt", "category": "Recruta" }
 ];
 
+// Categories in descending order
 const categoriesOrder = ['GM', 'Semi-GM', 'Texugão da Malásia', 'Texugo Atroz', 'Ogney', 'Recruta'];
+
+// Getting main container
 const container = document.getElementById('container');
+
+// Players selected by user
 let selectedPlayers = [];
 
-// Function to generate balanced teams
+// Generate teams and update HTML tables
 const generateTeams = () => {
+  // Get tables
   const teamATable = document.getElementById('teamATable');
   const teamBTable = document.getElementById('teamBTable');
-  const vsText = document.getElementById('vsText');
-  const thanos = document.getElementById('thanos');
-  
-  // Clear previous data
+
+  // Clear existing tables
   teamATable.innerHTML = '';
   teamBTable.innerHTML = '';
-  
+
+  // Initialize teams
+  const teamA = [];
+  const teamB = [];
+
+  // Count GMs in both teams for future reference
+  let gmCountA = 0;
+  let gmCountB = 0;
+
+  // Sort players based on category and ranking
   const sortedPlayers = [...selectedPlayers].sort((a, b) => {
     if (a.category === b.category) {
       return (a.ranking || Infinity) - (b.ranking || Infinity);
@@ -40,44 +54,65 @@ const generateTeams = () => {
     return categoriesOrder.indexOf(a.category) - categoriesOrder.indexOf(b.category);
   });
 
-  const teamA = [];
-  const teamB = [];
-
+  // Distribute players to teams
   sortedPlayers.forEach((player, index) => {
-    (index % 2 === 0 ? teamA : teamB).push(player);
+    if (index % 2 === 0) {
+      teamA.push(player);
+      if (player.category === 'GM') {
+        gmCountA++;
+      }
+    } else {
+      teamB.push(player);
+      if (player.category === 'GM') {
+        gmCountB++;
+      }
+    }
+  });
+  
+  // Add AI Bot if teams are unbalanced
+  if (selectedPlayers.length % 2 !== 0) {
+    let difficulty = "Captain";
+    
+    if (gmCountA > 1 || gmCountB > 1) {
+      difficulty = 'Death March';
+    } else if (sortedPlayers.some(p => p.category === 'Recruta' || p.category === 'Ogney')) {
+      difficulty = 'Soldier';
+    }
+    
+    const botPlayer = { nickname: 'AI_Bot', category: 'Bot', bot: true, difficulty };
+    
+    // Determine which team is smaller and add the bot to it
+    if (teamA.length < teamB.length) {
+      teamA.push(botPlayer);
+    } else {
+      teamB.push(botPlayer);
+    }
+  }
+
+  // Update tables with team data
+  [teamA, teamB].forEach((team, index) => {
+    const table = index === 0 ? teamATable : teamBTable;
+    team.forEach(player => {
+      const row = document.createElement('tr');
+      const cell = document.createElement('td');
+      cell.textContent = player.bot ? player.difficulty : player.nickname;
+      row.appendChild(cell);
+      table.appendChild(row);
+    });
   });
 
-  teamA.forEach(player => {
-    const row = document.createElement('tr');
-    const cell = document.createElement('td');
-    cell.textContent = player.nickname;
-    row.appendChild(cell);
-    teamATable.appendChild(row);
-  });
-
-  teamB.forEach(player => {
-    const row = document.createElement('tr');
-    const cell = document.createElement('td');
-    cell.textContent = player.nickname;
-    row.appendChild(cell);
-    teamBTable.appendChild(row);
-  });
-
-  // Display Team A, Team B, and the VS text
-  teamATable.parentElement.classList.remove('hidden');
-  teamBTable.parentElement.classList.remove('hidden');
-  vsText.classList.remove('hidden');
-  thanos.classList.remove('hidden');
+  // Unhide your GIF element here
+  document.querySelectorAll('.hidden').forEach(el => el.classList.remove('hidden'));
 };
 
-// Group players by categories
+// Group players by category
 const groupedPlayers = players.reduce((acc, player) => {
   if (!acc[player.category]) acc[player.category] = [];
   acc[player.category].push(player);
   return acc;
 }, {});
 
-// Update the counter
+// Update available slots counter
 const updateCounter = () => {
   const remainingSlots = 8 - selectedPlayers.length;
   const counters = document.querySelectorAll('.counter');
@@ -86,15 +121,18 @@ const updateCounter = () => {
   });
 };
 
-// Loop through each category to create a box
+// Create and populate category boxes
 Object.keys(groupedPlayers).sort((a, b) => categoriesOrder.indexOf(a) - categoriesOrder.indexOf(b)).forEach(category => {
+  // Create a box for the category
   const categoryBox = document.createElement('div');
   categoryBox.className = 'box p-4 m-2';
   
+  // Create a div for the category title
   const categoryContent = document.createElement('div');
   categoryContent.style.textAlign = 'center';
   categoryBox.appendChild(categoryContent);
 
+  // Create a title for the category
   const categoryTitle = document.createElement('h3');
   categoryTitle.className = 'title is-4';  // Bulma class for title styling
   categoryTitle.textContent = category;
@@ -120,7 +158,8 @@ Object.keys(groupedPlayers).sort((a, b) => categoriesOrder.indexOf(a) - categori
       }
       updateCounter(counter);  // Pass the counter specific to this checkbox
     });
-  
+    
+    // Create a checkbox for the row
     const checkbox = document.createElement('input');
     checkbox.type = 'checkbox';
     checkbox.style.width = '24px';
@@ -178,8 +217,8 @@ Object.keys(groupedPlayers).sort((a, b) => categoriesOrder.indexOf(a) - categori
     checkboxColumn.appendChild(checkbox);  // Add checkbox first
     checkboxColumn.appendChild(counter);  // Add counter after checkbox
 
+    // Add checkbox column to the row
     row.appendChild(checkboxColumn);
-
   
     // Apply CSS styles to center both the player's name and checkbox vertically
     playerNameColumn.style.display = 'flex';
@@ -190,7 +229,9 @@ Object.keys(groupedPlayers).sort((a, b) => categoriesOrder.indexOf(a) - categori
     categoryBox.appendChild(row);
   });
   
+  // Add category box to the main container
   container.appendChild(categoryBox);
 });
 
+// Add click event to the Generate Teams button
 document.getElementById('generateTeamsBtn').addEventListener('click', generateTeams);
