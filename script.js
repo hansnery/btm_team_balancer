@@ -10,7 +10,7 @@ const players = [
   { "nickname": "Uchi", "category": "Texugão da Malásia" },
   { "nickname": "Moicano", "category": "Texugão da Malásia" },
   { "nickname": "Ximalia", "category": "Texugão da Malásia" },
-  { "nickname": "Forg", "category": "Texugão da Malásia" },
+  { "nickname": "Polimix", "category": "Texugão da Malásia" },
   { "nickname": "UrukDinho", "category": "Texugão da Malásia" },
   { "nickname": "PigFoot", "category": "Texugo Atroz" },
   { "nickname": "Frazão", "category": "Texugo Atroz" },
