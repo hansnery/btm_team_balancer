@@ -6,6 +6,7 @@ const players = [
   { "nickname": "Oakenshield", "category": "Semi-GM" },
   { "nickname": "Apocalipse", "category": "Semi-GM" },
   { "nickname": "Felagund", "category": "Semi-GM" },
+  { "nickname": "Killer_Elf", "category": "Semi-GM" },
   { "nickname": "Uchi", "category": "Texugão da Malásia" },
   { "nickname": "Moicano", "category": "Texugão da Malásia" },
   { "nickname": "Ximalia", "category": "Texugão da Malásia" },
