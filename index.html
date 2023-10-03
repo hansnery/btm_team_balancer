@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.3/css/bulma.min.css">
+  <link rel="stylesheet" type="text/css" href="css/main.css">
+</head>
+<body>
+  <section class="section">
+    <div class="container">
+      <h1 class="title main-title has-text-centered pb-4">Batalha pela Terra-Média (Gerador de Times)</h1>
+      <ul id="gm-list is-narrow">
+        <!-- List will populate here -->
+      </ul>
+      <div id="container">
+        <!-- Player lists will be inserted here -->
+      </div>
+      <div class="centered-button p-6">
+        <button class="button is-large" id="generateTeamsBtn">Gerar Times</button>
+      </div>
+      <div id="teamsContainer"> <!-- Wrapper for table centering -->
+        <div class="columns hidden">
+          <div class="column custom-column">
+            <h2 class="hidden">Team A</h2>
+            <table class="table is-bordered is-fullwidth">
+              <tbody id="teamATable"></tbody>
+            </table>
+          </div>
+          <div class="column hidden" id="vsText" >VS</div> <!-- VS text -->
+          <div class="column custom-column">
+            <h2 class="hidden">Team B</h2>
+            <table class="table is-bordered is-fullwidth">
+              <tbody id="teamBTable"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+      <div class="columns thanos-container">
+        <img class="column hidden m-6" id="thanos" src="./images/perfectly-balanced-thanos.gif">
+      </div>
+    </div>
+  </section>
+  <script src="./script.js"></script>
+</body>
+</html>

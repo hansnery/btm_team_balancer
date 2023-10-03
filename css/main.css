@@ -1,0 +1,70 @@
+/* Center the button horizontally */
+.centered-button {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Hide elements initially */
+.hidden {
+  display: none;
+}
+
+/* Center tables and style the VS text */
+#teamsContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Style for VS text */
+#vsText {
+  font-size: 24px;
+  margin: 0 20px;
+}
+
+/* Define custom column styles */
+.custom-column {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start; /* Align items at the top */
+  align-items: center;
+  height: 100%; /* Ensure both columns have the same height */
+}
+
+/* Adjust column width */
+.custom-column > .column {
+  width: 100%;
+}
+
+/* Center Thanos image */
+.columns.thanos-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Center the button horizontally */
+body {
+  background-image: url('../images/wallpaper.jpg');
+  background-size: contain;
+  background-position: center;
+}
+
+/* Define custom font */
+@font-face {
+  font-family: 'Ringbearer';
+  src: url('./fonts/ringbearer/font-file.ttf') format('truetype');
+}
+
+/* Apply custom font */
+.main-title {
+  font-family: 'Ringbearer', fallback, sans-serif;
+  color: #fff;  /* Set text color */
+  text-shadow: 0 0 10px #fff, 0 0 10px #fff, 0 0 10px #ffd102, 0 0 20px #ffd900;  /* Add glow */
+}
+
+/* Style the row when selected */
+.selected {
+  background-color: #f1f1f1;
+}
