@@ -16,7 +16,6 @@ const players = [
   { nickname: "UrukDinho", category: "Texugo Atroz" },
   { nickname: "Ogney", category: "Ogney" },
   { nickname: "SoldierBoy", category: "Ogney" },
-  { nickname: "Carneiro", category: "Recruta" },
   { nickname: "Aragorn", category: "Recruta" },
 ];
 
