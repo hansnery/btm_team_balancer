@@ -3,21 +3,21 @@ const players = [
   { nickname: "Annatar_BR", category: "GM", ranking: 1 },
   { nickname: "Viapiana_BR", category: "GM", ranking: 2 },
   { nickname: "JrTurambar", category: "GM", ranking: 3 },
+  { nickname: "Apocalipse", category: "GM", ranking: 4 },
+  { nickname: "Polimix", category: "GM", ranking: 5 },
   { nickname: "Oakenshield", category: "Semi-GM" },
-  { nickname: "Apocalipse", category: "Semi-GM" },
   { nickname: "Felagund", category: "Semi-GM" },
-  { nickname: "Polimix", category: "Semi-GM" },
   { nickname: "Moicano", category: "Semi-GM" },
-  { nickname: "Frazão", category: "Semi-GM" },
+  { nickname: "Frazão", category: "Texugão da Malásia" },
   { nickname: "Killer_Elf", category: "Texugão da Malásia" },
   { nickname: "Uchi", category: "Texugão da Malásia" },
   { nickname: "Ximalia", category: "Texugão da Malásia" },
-  { nickname: "UrukDinho", category: "Texugão da Malásia" },
   { nickname: "PigFoot", category: "Texugão da Malásia" },
+  { nickname: "UrukDinho", category: "Texugo Atroz" },
   { nickname: "Ogney", category: "Ogney" },
   { nickname: "SoldierBoy", category: "Ogney" },
   { nickname: "Carneiro", category: "Recruta" },
-  { nickname: "Witt", category: "Recruta" },
+  { nickname: "Aragorn", category: "Recruta" },
 ];
 
 // Categories in descending order
@@ -50,11 +50,26 @@ const generateTeams = () => {
   const teamA = [];
   const teamB = [];
 
-  // Count GMs in both teams for future reference
-  let gmCountA = 0;
-  let gmCountB = 0;
+  // Strength mapping by category
+  const categoryStrength = {
+    GM: 100,
+    "Semi-GM": 80,
+    "Texugão da Malásia": 60,
+    "Texugo Atroz": 50,
+    Ogney: 40,
+    Recruta: 30,
+    Bot: 50,
+  };
 
-  // Sort players based on category and ranking
+  // Helper function: Shuffle players array
+  const shuffleArray = (array) => {
+    for (let i = array.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [array[i], array[j]] = [array[j], array[i]];
+    }
+  };
+
+  // Sort players by category and ranking, then shuffle
   const sortedPlayers = [...selectedPlayers].sort((a, b) => {
     if (a.category === b.category) {
       return (a.ranking || Infinity) - (b.ranking || Infinity);
@@ -64,24 +79,26 @@ const generateTeams = () => {
     );
   });
 
-  // Distribute players to teams
-  sortedPlayers.forEach((player, index) => {
-    if (index % 2 === 0) {
-      teamA.push(player);
-      if (player.category === "GM") {
-        gmCountA++;
-      }
-    } else {
+  shuffleArray(sortedPlayers);
+
+  // Distribute players to teams with slight randomness
+  sortedPlayers.forEach((player) => {
+    if (
+      teamA.length === teamB.length ||
+      (teamA.length > teamB.length && Math.random() > 0.5)
+    ) {
       teamB.push(player);
-      if (player.category === "GM") {
-        gmCountB++;
-      }
+    } else {
+      teamA.push(player);
     }
   });
 
-  // Add AI Bot if teams are unbalanced
+  // Add AI Bot only if the total number of players is odd
   if (selectedPlayers.length % 2 !== 0) {
     let difficulty = "Captain";
+
+    const gmCountA = teamA.filter((p) => p.category === "GM").length;
+    const gmCountB = teamB.filter((p) => p.category === "GM").length;
 
     if (gmCountA > 1 || gmCountB > 1) {
       difficulty = "Death March";
@@ -100,7 +117,6 @@ const generateTeams = () => {
       difficulty,
     };
 
-    // Determine which team is smaller and add the bot to it
     if (teamA.length < teamB.length) {
       teamA.push(botPlayer);
     } else {
@@ -108,9 +124,61 @@ const generateTeams = () => {
     }
   }
 
-  // Update tables with team data
+  // Calculate team strength
+  const calculateStrength = (team) =>
+    team.reduce((sum, player) => {
+      const baseStrength = categoryStrength[player.category] || 0;
+      const rankingBonus = player.ranking ? 100 - player.ranking : 0;
+      return sum + baseStrength + rankingBonus;
+    }, 0);
+
+  const strengthA = calculateStrength(teamA);
+  const strengthB = calculateStrength(teamB);
+  const totalStrength = strengthA + strengthB;
+  const percentageA = ((strengthA / totalStrength) * 100).toFixed(1);
+  const percentageB = ((strengthB / totalStrength) * 100).toFixed(1);
+
+  // Helper function to create a progress bar
+  const createProgressBar = (percentage) => {
+    const progressBarContainer = document.createElement("div");
+    progressBarContainer.style.width = "100%";
+    progressBarContainer.style.backgroundColor = "#e0e0e0";
+    progressBarContainer.style.borderRadius = "8px";
+    progressBarContainer.style.overflow = "hidden";
+    progressBarContainer.style.marginBottom = "10px";
+
+    const progressBar = document.createElement("div");
+    progressBar.style.width = `${percentage}%`;
+    progressBar.style.height = "20px";
+    progressBar.style.backgroundColor = "#4caf50";
+    progressBar.style.textAlign = "center";
+    progressBar.style.color = "white";
+    progressBar.style.lineHeight = "20px";
+    progressBar.style.fontSize = "12px";
+    progressBar.textContent = `${percentage}%`;
+
+    progressBarContainer.appendChild(progressBar);
+    return progressBarContainer;
+  };
+
+  // Update tables with team data and strengths
   [teamA, teamB].forEach((team, index) => {
     const table = index === 0 ? teamATable : teamBTable;
+    const percentage = index === 0 ? percentageA : percentageB;
+
+    // Add strength bar at the top
+    const strengthRow = document.createElement("tr");
+    const strengthCell = document.createElement("td");
+    strengthCell.colSpan = 1;
+
+    // Add progress bar to the cell
+    const progressBar = createProgressBar(percentage);
+    strengthCell.appendChild(progressBar);
+
+    strengthRow.appendChild(strengthCell);
+    table.appendChild(strengthRow);
+
+    // Add players to the table
     team.forEach((player) => {
       const row = document.createElement("tr");
       const cell = document.createElement("td");
