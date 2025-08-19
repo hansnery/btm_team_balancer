@@ -288,11 +288,18 @@ Object.keys(groupedPlayers)
 
       // Add category image inside the image column
       const img = document.createElement("img");
-      img.src = `images/${category}.png`; // Assuming image filenames match category names
+      img.src = `./images/${category}.png`; // Using relative path with leading ./
       img.alt = category; // Alt text for accessibility
       img.style.maxWidth = "64px"; // Set a maximum width
       img.style.maxHeight = "64px"; // Set a maximum height
       img.className = "image"; // Bulma class for margin
+
+      // Add error handling for image loading
+      img.onerror = function () {
+        console.error(`Failed to load image for category: ${category}`);
+        this.style.display = "none"; // Hide the image if it fails to load
+      };
+
       imgColumn.appendChild(img);
 
       // Create a column for the player's name
