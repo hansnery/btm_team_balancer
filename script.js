@@ -19,7 +19,7 @@ const players = [
   { nickname: "Uchi", category: "Aposentado" },
   { nickname: "UrukDinho", category: "Aposentado" },
   { nickname: "Ogney", category: "Ogney" },
-  { nickname: "Aragorn", category: "Recruta" },
+  { nickname: "Leodorense", category: "Recruta" },
 ];
 
 // Categories in descending order
