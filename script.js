@@ -28,6 +28,7 @@ const categoriesOrder = [
   "Semi-GM",
   "Texugão da Malásia",
   "Texugo Atroz",
+  "Aposentado",
   "Ogney",
   "Recruta",
 ];
